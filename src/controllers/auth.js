@@ -66,3 +66,56 @@ exports.login = async (req, res) => {
       });
     }
   };
+
+exports.register = async (req, res) => {
+  // our validation schema here
+  const schema = Joi.object({
+    fullName: Joi.string().min(5).required(),
+    email: Joi.string().email().min(6).required(),
+    password: Joi.string().min(6).required(),
+    role: Joi.string().required(),
+  });
+
+  // do validation and get error object from schema.validate
+  const { error } = schema.validate(req.body);
+
+  // if error exist send validation error message
+  if (error)
+    return res.status(400).send({
+      error: {
+        message: error.details[0].message,
+      },
+    });
+
+  try {
+    // we generate salt (random value) with 10 rounds
+    const salt = await bcrypt.genSalt(10);
+    // we hash password from request with salt
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+
+    const newUser = await Users.create({
+      fullName: req.body.fullName,
+      email: req.body.email,
+      password: hashedPassword,
+      role: req.body.role
+    });
+
+    // code here
+
+    res.status(200).send({
+      status: 'success...',
+      data: {
+        fullName: newUser.fullName,
+        email: newUser.email,
+        // code here
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      status: 'failed',
+      message: 'Server Error',
+    });
+  }
+};
+
