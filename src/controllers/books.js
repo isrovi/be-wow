@@ -43,7 +43,11 @@ exports.getBooks = async (req, res) => {
 
 exports.getBook = async (req, res) => {
     try {
+      const { id } = req.params;
       const data = await Books.findOne({
+        where: {
+          id,
+        },
         attributes: {
           exclude: ['createdAt', 'updatedAt'],
         },

@@ -79,7 +79,7 @@ exports.register = async (req, res) => {
       password: hashedPassword,
       role: req.body.role
     });
-   
+    
     const userExist = await Users.findOne({
       where: {
         email : req.body.email
@@ -100,9 +100,7 @@ exports.register = async (req, res) => {
         email: newUser.email,
         role: newUser.role
       },
-    });
-
-    
+    });    
 
   } catch (error) {
     console.log(error);
