@@ -25,13 +25,13 @@ exports.addTransaction = async (req,res) => {
 
         data = {
             ...data.dataValues,
-            transferProof : process.env.PATH_FILE + data.transferProof
+            transferProof : process.env.FILE_PATH + data.transferProof
         }
 
         res.send({
             status : "Success",
             data : {
-                transaction : data
+                data
             }
         });
     } catch (error) {

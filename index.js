@@ -11,6 +11,7 @@ const port = 5000
 
 app.use(express.json())
 
+app.use('/uploads',express.static('uploads'));
 // Add endpoint grouping and router
 app.use('/api/v1/', router)
 
