@@ -8,8 +8,8 @@ const jwt = require('jsonwebtoken');
 
 exports.login = async (req, res) => {
     const schema = Joi.object({
-      email: Joi.string().email().required(),
-      password: Joi.string().required(),
+      email: Joi.string().email().min(5).required(),
+      password: Joi.string().min(5).required(),
     });
   
     const { error } = schema.validate(req.body);
@@ -42,8 +42,8 @@ exports.login = async (req, res) => {
       const dataToken = {
         id: userExist.id,
       };
-      const SECRET_KEY = '543'; 
-      const token = jwt.sign(dataToken, SECRET_KEY);
+      
+      const token = jwt.sign(dataToken, process.env.SECRET_KEY);
   
       res.status(200).send({
         status: 'Success',
@@ -60,7 +60,7 @@ exports.login = async (req, res) => {
         message: 'Server Error',
       });
     }
-  };
+};
 
 exports.register = async (req, res) => {
   const schema = Joi.object({
@@ -73,13 +73,7 @@ exports.register = async (req, res) => {
   try {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
-    const newUser = await Users.create({
-      fullName: req.body.fullName,
-      email: req.body.email,
-      password: hashedPassword,
-      role: req.body.role
-    });
-    
+
     const userExist = await Users.findOne({
       where: {
         email : req.body.email
@@ -92,6 +86,13 @@ exports.register = async (req, res) => {
         message: 'Email already exist'
       });
     }
+
+    const newUser = await Users.create({
+      fullName: req.body.fullName,
+      email: req.body.email,
+      password: hashedPassword,
+      role: req.body.role
+    });
 
     res.status(200).send({
       status: 'Success',
