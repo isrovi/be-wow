@@ -2,7 +2,7 @@
   "development": {
     "username": "root",
     "password": null,
-    "database": "window-of-world",
+    "database": "window_of_world",
     "host": "localhost",
     "dialect": "mysql"
   },
